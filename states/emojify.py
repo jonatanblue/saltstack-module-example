@@ -3,10 +3,10 @@
 A state module to manage emoji files
 .. code-block:: yaml
     /tmp/happy:
-      emoji.present:
+      emojify.present:
         - emotion: happy
     /tmp/sad:
-      emoji.present:
+      emojify.present:
         - emotion: sad
 '''
 
