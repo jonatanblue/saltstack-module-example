@@ -59,14 +59,14 @@ The easiest way to run and test that everything works is to treat your own machi
 To do this, install SaltStack and use the `salt-call` command, with a couple of options to make it completely standalone.
 
 ```
-salt-call --local --file-root=${PWD} --module-dirs=${PWD}/modules --states-dir=${PWD}/states state.apply
+salt-call --local --file-root=${PWD} state.apply
 ```
 
 Command explained:
 
 * `--local` pretends there is no Salt master and runs everything locally
 * `--file-root` tells Salt in which directory to look for state (`*.sls`) files
-* `--module-dirs` makes our execution module available to Salt
-* `--states-dir` makes the state module available to Salt
 * `state.apply` tells Salt to apply the state as defined in the `*.sls` files
+
+The folders `_modules` and `_states` are special names, so as long as we run `salt-call` in their parent directory, the modules and states inside will be picked up and used automatically.
 
