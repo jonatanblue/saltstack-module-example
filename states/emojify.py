@@ -25,9 +25,11 @@ def present(name, emotion):
         'name': name,
         'result': False
     }
+    # Get emoji
+    state_emoji = __salt__['emojify.get_emoji_for_emotion'](emotion)
 
     # Validate emotion
-    if __salt__['emojify.get_emoji_for_emotion'](emotion) is None:
+    if state_emoji is None:
         valid_emotions = __salt__['emojify.get_valid_emotions']()
         ret['comment'] = '{} is not one of {}'.format(emotion, valid_emotions)
         return ret
@@ -36,7 +38,6 @@ def present(name, emotion):
     target = __salt__['emojify.get_emoji'](name)
 
     if target is not None:
-        state_emoji = __salt__['emojify.get_emoji_for_emotion'](emotion)
         # Compare desired state with actual state
         if target != state_emoji:
             # Update
@@ -56,7 +57,7 @@ def present(name, emotion):
         result = __salt__['emojify.write_emoji'](name, emotion)
         if result:
             ret['changes']['old'] = target
-            ret['changes']['new'] = emotion
+            ret['changes']['new'] = state_emoji
             ret['comment'] = '{} updated'.format(name)
             ret['result'] = True
         else:
