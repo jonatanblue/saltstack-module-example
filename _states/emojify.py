@@ -40,12 +40,17 @@ def present(name, emotion):
     if target is not None:
         # Compare desired state with actual state
         if target != state_emoji:
+            # Return if test
+            if __opts__['test']:
+                ret['comment'] = 'The emoji {} is set to be changed.'.format(name)
+                ret['result'] = None
+                return ret
             # Update
             result = __salt__['emojify.write_emoji'](name, emotion)
             if result:
                 ret['changes']['old'] = target
                 ret['changes']['new'] = state_emoji
-                ret['comment'] = '{} updated'.format(name)
+                ret['comment'] = 'Emoji {} updated'.format(name)
                 ret['result'] = True
             else:
                 ret['comment'] = 'Failed to update'
@@ -53,12 +58,16 @@ def present(name, emotion):
             ret['comment'] = "Already up to date"
             ret['result'] = True
     else:
+        # Return here if test
+        if __opts__['test']:
+            ret['comment'] = 'The emoji {} is set to be created.'.format(name)
+            ret['result'] = None
+            return ret
         # Create new emoji
         result = __salt__['emojify.write_emoji'](name, emotion)
         if result:
-            ret['changes']['old'] = target
-            ret['changes']['new'] = state_emoji
-            ret['comment'] = '{} updated'.format(name)
+            ret['changes']['diff'] = "New file"
+            ret['comment'] = 'Emoji {} created'.format(name)
             ret['result'] = True
         else:
             ret['comment'] = 'Failed to update'
@@ -81,17 +90,21 @@ def absent(name):
     target = __salt__['emojify.get_emoji'](name)
 
     if target is not None:
+        # Return here if test
+        if __opts__['test']:
+            ret['comment'] = 'The emoji {} is set to be deleted.'.format(name)
+            ret['result'] = None
+            return ret
         # Delete it
         result = __salt__['emojify.delete_emoji_file'](name)
         if result:
-            ret['changes']['old'] = target
-            ret['changes']['new'] = None
+            ret['changes']['diff'] = "Deleted emoji {}".format(name)
             ret['comment'] = '{} deleted'.format(name)
             ret['result'] = True
         else:
             ret['comment'] = 'Failed to delete'
     else:
         # Already deleted
-        ret['comment'] = '{} already deleted'.format(name)
+        ret['comment'] = 'The emoji {} is not present'.format(name)
         ret['result'] = True
     return ret
