@@ -42,6 +42,8 @@ def present(name, emotion):
         if target != state_emoji:
             # Return if test
             if __opts__['test']:
+                ret['changes']['old'] = target
+                ret['changes']['new'] = state_emoji
                 ret['comment'] = 'The emoji {} is set to be changed.'.format(name)
                 ret['result'] = None
                 return ret
